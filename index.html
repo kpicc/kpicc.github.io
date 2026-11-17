@@ -11,26 +11,58 @@
         margin: 48px auto;
         padding: 0 24px;
         color: #1e1e1e;
+        background: #f7f7f7;
       }
-      h1 { font-weight: 500; }
-      ul { list-style: none; padding: 0; }
-      li { margin: 12px 0; }
-      a {
+      h1 { font-weight: 500; margin-bottom: 24px; }
+      .card {
+        background: #ffffff;
+        border: 2px solid #156ba3;
+        border-radius: 16px;
+        padding: 24px 28px;
+      }
+      .card-tag {
+        display: inline-block;
+        background: #dceefc;
         color: #156ba3;
-        text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 12px;
       }
-      a:hover { text-decoration: underline; }
-      .desc { font-size: 14px; color: #4e4e4e; margin-left: 8px; }
+      .card h2 {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1e1e1e;
+        margin: 16px 0 8px;
+      }
+      .card p {
+        font-size: 15px;
+        line-height: 1.5;
+        color: #4e4e4e;
+        margin: 0 0 20px;
+      }
+      .card a {
+        color: #156ba3;
+        font-weight: 700;
+        font-size: 16px;
+        text-decoration: none;
+      }
+      .card a:hover { text-decoration: underline; }
     </style>
   </head>
   <body>
     <h1>Katrina's prototypes</h1>
-    <ul>
-      <li>
-        <a href="/freedom-design-system/">Freedom Mobile Design System</a>
-        <span class="desc">React + TypeScript component library</span>
-      </li>
-    </ul>
+    <div class="card">
+      <span class="card-tag">Freedom Mobile</span>
+      <h2>Freedom Mobile Design System</h2>
+      <p>
+        React + TypeScript component library with brand tokens, Ambra Sans Text,
+        and components derived from freedommobile.ca — buttons, inputs, cards,
+        badges, plan cards, and a responsive typography scale.
+      </p>
+      <a href="/freedom-design-system/">Open prototype &rarr;</a>
+    </div>
   </body>
 </html>
