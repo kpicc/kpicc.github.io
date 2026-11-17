@@ -4,10 +4,76 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Freedom Mobile Design System</title>
-    <script type="module" crossorigin src="/freedom-design-system/assets/index-BIkxkNT7.js"></script>
-    <link rel="stylesheet" crossorigin href="/freedom-design-system/assets/index-BswZLL5q.css">
+    <style>
+      .proto-header {
+        background: #ffffff;
+        border-bottom: 1px solid #dedede;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: 'Ambra', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      .proto-header a {
+        color: #000000;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .proto-header a:hover { text-decoration: underline; }
+      .proto-view-toggle {
+        display: inline-flex;
+        border: 1px solid #dedede;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .proto-view-toggle button {
+        border: none;
+        background: #ffffff;
+        color: #000000;
+        font: inherit;
+        font-size: 14px;
+        padding: 4px 16px;
+        cursor: pointer;
+      }
+      .proto-view-toggle button.active {
+        background: #012f4c;
+        color: #ffffff;
+      }
+      body.proto-mobile #root {
+        max-width: 390px;
+        margin: 0 auto;
+        border: 1px solid #dedede;
+        border-top: none;
+        min-height: 100vh;
+        background: #ffffff;
+      }
+      body.proto-mobile .docs {
+        padding: 24px 20px;
+      }
+    </style>
+    <script type="module" crossorigin src="/freedom-design-system/assets/index-r6a8eVdU.js"></script>
+    <link rel="stylesheet" crossorigin href="/freedom-design-system/assets/index-YHs9zsxI.css">
   </head>
   <body>
+    <header class="proto-header">
+      <a href="/">&larr; Back to prototypes</a>
+      <div class="proto-view-toggle">
+        <button type="button" data-view="desktop" class="active">Desktop</button>
+        <button type="button" data-view="mobile">Mobile</button>
+      </div>
+    </header>
     <div id="root"></div>
+    <script>
+      (function () {
+        var buttons = document.querySelectorAll('.proto-view-toggle button');
+        buttons.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            document.body.classList.toggle('proto-mobile', btn.dataset.view === 'mobile');
+            buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
