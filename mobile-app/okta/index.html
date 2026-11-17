@@ -51,14 +51,38 @@
         background: #012f4c;
         color: #ffffff;
       }
-      body.proto-mobile #root {
-        max-width: 390px;
-        margin: 0 auto;
-        border: 1px solid #dedede;
-        border-top: none;
-        min-height: 100vh;
+      .proto-device {
+        display: none;
+        margin: 32px auto;
+        width: 390px;
+        height: 844px;
+        border: 12px solid #1e1e1e;
+        border-radius: 44px;
+        overflow: hidden;
+        position: relative;
         background: #ffffff;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
       }
+      .proto-device::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 26px;
+        background: #1e1e1e;
+        border-radius: 0 0 16px 16px;
+        z-index: 2;
+      }
+      .proto-device iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      body.proto-mobile #root { display: none; }
+      body.proto-mobile .proto-device { display: block; }
+      body.proto-frame .proto-header { display: none; }
     </style>
     <script type="module" crossorigin src="/mobile-app/okta/assets/index-DsyKe9Nv.js"></script>
     <link rel="stylesheet" crossorigin href="/mobile-app/okta/assets/index-COKD45mf.css">
@@ -72,12 +96,22 @@
       </div>
     </header>
     <div id="root"></div>
+    <div class="proto-device"><iframe title="Mobile preview"></iframe></div>
     <script>
       (function () {
+        if (new URLSearchParams(location.search).has('frame')) {
+          document.body.classList.add('proto-frame');
+          return;
+        }
         var buttons = document.querySelectorAll('.proto-view-toggle button');
+        var iframe = document.querySelector('.proto-device iframe');
         buttons.forEach(function (btn) {
           btn.addEventListener('click', function () {
-            document.body.classList.toggle('proto-mobile', btn.dataset.view === 'mobile');
+            var mobile = btn.dataset.view === 'mobile';
+            document.body.classList.toggle('proto-mobile', mobile);
+            if (mobile && !iframe.src) {
+              iframe.src = location.origin + location.pathname + '?frame=1';
+            }
             buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
           });
         });
