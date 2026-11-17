@@ -15,11 +15,33 @@
           height: 32px !important;
         }
       }
+
+      .proto-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #012f4c;
+        padding: 12px 20px;
+        z-index: 100;
+      }
+      .proto-header a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: 'Ambra', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      .proto-header a:hover { text-decoration: underline; }
+      body { padding-top: 44px; }
     </style>
     <script type="module" crossorigin src="/mobile-app/okta/assets/index-DsyKe9Nv.js"></script>
     <link rel="stylesheet" crossorigin href="/mobile-app/okta/assets/index-COKD45mf.css">
   </head>
   <body>
+    <header class="proto-header">
+      <a href="/">&larr; Back to prototypes</a>
+    </header>
     <div id="root"></div>
   </body>
 </html>
