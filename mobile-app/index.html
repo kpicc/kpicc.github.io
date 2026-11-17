@@ -193,33 +193,47 @@
   .offer p { font-size: 12px; color: var(--grey); line-height: 1.45; margin-bottom: 10px; }
   .offer .btn-solid { width: 100%; font-size: 13px; padding: 10px; }
 
-  /* bottom nav */
+  /* bottom nav — pixel-matched to Figma node 5091:3936 */
   .bottom-nav {
-    flex-shrink: 0; display: flex; background: #fff; border-top: 1px solid var(--line);
-    padding: 8px 4px 20px; position: relative;
+    flex-shrink: 0; position: relative; height: 85px;
   }
-  .bottom-nav button {
-    flex: 1; background: none; border: none; display: flex; flex-direction: column;
-    align-items: center; gap: 4px; font-size: 11px; color: var(--ink); cursor: pointer;
-    font-family: inherit;
+  .nav-bg {
+    position: absolute; left: 0; top: 0; width: 100%; height: 85px; display: block;
   }
-  .bottom-nav button svg { width: 24px; height: 24px; }
-  .bottom-nav button.sel { color: var(--orange); font-weight: 600; }
-  .bottom-nav button.sel::before {
-    content: ''; position: absolute; top: 0; width: 44px; height: 3px;
-    background: var(--orange); border-radius: 0 0 3px 3px;
+  .nb {
+    position: absolute; top: 12.5px; padding: 8px;
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+    background: none; border: none; cursor: pointer; font-family: inherit;
   }
-  .bottom-nav button { position: relative; }
+  .nb .ni {
+    width: 24px; height: 24px; display: block;
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-position: center; mask-position: center;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    background-color: #191919;
+  }
+  .nb.sel .ni { background-color: var(--orange); }
+  .nb span { font-size: 14px; line-height: 20px; color: #191919; font-weight: 400; }
+  .nb.sel span { color: var(--orange); }
+  .ni-home    { -webkit-mask-image: url('assets/icon-home.svg'); mask-image: url('assets/icon-home.svg'); }
+  .ni-services{ -webkit-mask-image: url('assets/icon-services.svg'); mask-image: url('assets/icon-services.svg'); }
+  .ni-usage   { -webkit-mask-image: url('assets/icon-usage.svg'); mask-image: url('assets/icon-usage.svg'); }
+  .ni-billing { -webkit-mask-image: url('assets/icon-billing.svg'); mask-image: url('assets/icon-billing.svg'); }
   .nav-shop {
-    margin-top: -26px;
+    position: absolute; left: 170px; top: -1.5px; width: 55px; height: 55px;
+    border: none; background: none; cursor: pointer; padding: 0;
   }
-  .nav-shop .bag {
-    width: 56px; height: 56px; border-radius: 50%; background: var(--navy-deep);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,.25); border: 4px solid var(--bg);
+  .nav-shop img { position: absolute; display: block; }
+  .nav-shop .ring { left: 0; top: 0; width: 55px; height: 53px; }
+  .nav-shop .bag { left: 0; top: 2px; width: 55px; height: 55px; }
+  .nav-dash {
+    position: absolute; top: 10px; width: 34px; height: 2px; display: block;
+    transition: left .2s ease;
   }
-  .nav-shop .bag svg { width: 24px; height: 24px; }
-  .nav-shop.sel { color: var(--ink); }
+  .nav-homebar {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    top: 79px; width: 85px; height: 4px; display: block;
+  }
 
   /* sub pages */
   .sub-head { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; }
@@ -476,25 +490,25 @@
 
       <!-- bottom nav -->
       <nav class="bottom-nav">
-        <button class="sel" data-v="home" onclick="go('home')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
-          Home
+        <img class="nav-bg" src="assets/union.svg" alt="" />
+        <img class="nav-dash" id="navDash" src="assets/line-active.svg" alt="" />
+        <button class="nb sel" data-v="home" style="left:15px" onclick="go('home')">
+          <i class="ni ni-home"></i><span>Home</span>
         </button>
-        <button data-v="services" onclick="go('services')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg>
-          Services
+        <button class="nb" data-v="services" style="left:92px" onclick="go('services')">
+          <i class="ni ni-services"></i><span>Services</span>
         </button>
-        <button class="nav-shop" data-v="shop" onclick="go('shop')">
-          <span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="#db5c05" stroke-width="1.8"><path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>
+        <button class="nav-shop" data-v="shop" onclick="go('shop')" aria-label="Shop">
+          <img class="ring" src="assets/ellipse.svg" alt="" />
+          <img class="bag" src="assets/more.svg" alt="" />
         </button>
-        <button data-v="usage" onclick="go('usage')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.2 15A9 9 0 1 1 9 2.8"/><path d="M22 2v7h-7"/></svg>
-          Usage
+        <button class="nb" data-v="usage" style="left:249px" onclick="go('usage')">
+          <i class="ni ni-usage"></i><span>Usage</span>
         </button>
-        <button data-v="billing" onclick="go('billing')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h3"/></svg>
-          Billing
+        <button class="nb" data-v="billing" style="left:323px" onclick="go('billing')">
+          <i class="ni ni-billing"></i><span>Billing</span>
         </button>
+        <img class="nav-homebar" src="assets/line-indicator.svg" alt="" />
       </nav>
 
       <div class="toast" id="toast"></div>
@@ -515,6 +529,11 @@ function go(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   $('v-' + v).classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('sel', b.dataset.v === v));
+  const selBtn = document.querySelector('.bottom-nav button.sel');
+  if (selBtn && selBtn.classList.contains('nb')) {
+    $('navDash').style.display = 'block';
+    $('navDash').style.left = (selBtn.offsetLeft + selBtn.offsetWidth / 2 - 17) + 'px';
+  } else { $('navDash').style.display = 'none'; }
   document.querySelector('.app-scroll').scrollTop = 0;
 }
 
@@ -600,11 +619,13 @@ function seg(r) {
   region = r;
   ['segNat','segNat2'].forEach(id => $(id).classList.toggle('sel', r === 'nat'));
   ['segRoam','segRoam2'].forEach(id => $(id).classList.toggle('sel', r === 'roam'));
-  renderUsage();
+  go('home');
+renderUsage();
 }
 function addPass() {
   passes += 5;
-  renderUsage();
+  go('home');
+renderUsage();
   toast('5GB one-time pass added');
 }
 
@@ -646,6 +667,7 @@ function tick() {
   $('clock').textContent = (d.getHours() % 12 || 12) + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 tick(); setInterval(tick, 30000);
+go('home');
 renderUsage();
 </script>
 </body>
