@@ -75,9 +75,29 @@
         overflow-y: auto;
         scrollbar-width: thin;
       }
+      /* show only the top 1756/1879 of the screenshot (nav strip clipped) */
+      .screen .crop {
+        aspect-ratio: 393 / 1756;
+        overflow: hidden;
+        position: relative;
+      }
+      /* pinned bottom nav: shows only the bottom 123/1879 of the screenshot */
       .screen .nav {
         flex-shrink: 0;
+        aspect-ratio: 393 / 123;
+        overflow: hidden;
+        position: relative;
         border-top: 1px solid #e5e5e5;
+      }
+      .screen .crop img {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .screen .nav img {
+        position: absolute;
+        bottom: 0;
+        left: 0;
       }
       .screen img {
         display: block;
@@ -99,9 +119,13 @@
       <div class="device">
         <div class="screen">
           <div class="scroll">
-            <img src="content.png" alt="Freedom Mobile app home screen" />
+            <div class="crop">
+              <img src="home.png" alt="Freedom Mobile app home screen" />
+            </div>
           </div>
-          <img class="nav" src="nav.png" alt="" />
+          <div class="nav">
+            <img src="home.png" alt="" />
+          </div>
         </div>
       </div>
     </main>
