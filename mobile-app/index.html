@@ -64,9 +64,19 @@
         width: 100%;
         height: 100%;
         border-radius: 34px;
-        overflow-y: auto;
+        overflow: hidden;
         background: #fff;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen .scroll {
+        flex: 1;
+        overflow-y: auto;
         scrollbar-width: thin;
+      }
+      .screen .nav {
+        flex-shrink: 0;
+        border-top: 1px solid #e5e5e5;
       }
       .screen img {
         display: block;
@@ -87,7 +97,10 @@
       <p class="sub">Freedom My Account app — home screen (scroll inside the device)</p>
       <div class="device">
         <div class="screen">
-          <img src="home.png" alt="Freedom Mobile app home screen" />
+          <div class="scroll">
+            <img src="content.png" alt="Freedom Mobile app home screen" />
+          </div>
+          <img class="nav" src="nav.png" alt="" />
         </div>
       </div>
     </main>
