@@ -1,133 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mobile App — Katrina's Projects</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #f4f4f6;
-        min-height: 100vh;
-      }
-      .proto-header {
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
-        padding: 14px 24px;
-      }
-      .proto-header a {
-        color: #111;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-      }
-      main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px 16px 64px;
-      }
-      h1 {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 8px;
-      }
-      .sub {
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 32px;
-        text-align: center;
-      }
-      .device {
-        width: 390px;
-        height: 844px;
-        background: #111;
-        border-radius: 44px;
-        padding: 12px;
-        box-shadow: 0 24px 48px rgba(0,0,0,.18);
-        position: relative;
-      }
-      .device::before {
-        content: '';
-        position: absolute;
-        top: 22px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 110px;
-        height: 26px;
-        background: #111;
-        border-radius: 16px;
-        z-index: 2;
-      }
-      .screen {
-        width: 100%;
-        height: 100%;
-        border-radius: 34px;
-        overflow: hidden;
-        background: #fff;
-        display: flex;
-        flex-direction: column;
-      }
-      .screen .scroll {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        scrollbar-width: thin;
-      }
-      /* show only the top 1756/1879 of the screenshot (nav strip clipped) */
-      .screen .crop {
-        aspect-ratio: 393 / 1756;
-        overflow: hidden;
-        position: relative;
-      }
-      /* pinned bottom nav: shows only the bottom 123/1879 of the screenshot */
-      .screen .nav {
-        flex-shrink: 0;
-        aspect-ratio: 393 / 123;
-        overflow: hidden;
-        position: relative;
-        border-top: 1px solid #e5e5e5;
-      }
-      .screen .crop img {
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-      .screen .nav img {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-      }
-      .screen img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-      @media (max-width: 460px) {
-        .device { width: 100%; height: 80vh; }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="proto-header">
-      <a href="/">&larr; Back to projects</a>
-    </header>
-    <main>
-      <h1>Mobile App</h1>
-      <p class="sub">Freedom My Account app — home screen (scroll inside the device)</p>
-      <div class="device">
-        <div class="screen">
-          <div class="scroll">
-            <div class="crop">
-              <img src="home.png" alt="Freedom Mobile app home screen" />
-            </div>
-          </div>
-          <div class="nav">
-            <img src="home.png" alt="" />
-          </div>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mobile App — Katrina's Projects</title>
+<style>
+  :root {
+    --orange: #db5c05;
+    --orange-dark: #b34a04;
+    --navy: #0d2b45;
+    --navy-deep: #00263a;
+    --blue: #156ba3;
+    --blue-dark: #0f5687;
+    --ink: #1c1c1e;
+    --grey: #6b6b6b;
+    --line: #e5e5e5;
+    --bg: #f4f4f6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+  }
+  .proto-header {
+    background: #fff; border-bottom: 1px solid var(--line);
+    padding: 14px 24px;
+  }
+  .proto-header a { color: #111; text-decoration: none; font-size: 14px; font-weight: 500; }
+  main { display: flex; flex-direction: column; align-items: center; padding: 32px 16px 64px; }
+  .device {
+    width: 390px; height: 844px; background: #111; border-radius: 44px;
+    padding: 12px; box-shadow: 0 24px 48px rgba(0,0,0,.18); position: relative;
+  }
+  .device::before {
+    content: ''; position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 26px; background: #111; border-radius: 16px; z-index: 5;
+  }
+  .screen {
+    width: 100%; height: 100%; border-radius: 34px; overflow: hidden;
+    background: var(--bg); display: flex; flex-direction: column; position: relative;
+  }
+
+  /* ===== App chrome ===== */
+  .app-scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  .statusbar {
+    height: 44px; display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 28px 4px; font-size: 13px; font-weight: 600; color: var(--ink);
+    background: #fff; flex-shrink: 0;
+  }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; }
+  .app-header {
+    background: #fff; padding: 8px 16px 12px; display: flex;
+    align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .logo { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+  .logo em { font-style: normal; color: var(--orange); }
+  .app-header .hicons { display: flex; gap: 18px; color: var(--ink); }
+  .app-header svg { width: 22px; height: 22px; display: block; }
+
+  /* ===== Banner ===== */
+  .banner {
+    background: var(--navy-deep); color: #fff; display: flex; align-items: center;
+    gap: 12px; padding: 12px 14px; font-size: 13.5px; line-height: 1.35; flex-shrink: 0;
+  }
+  .banner svg { flex-shrink: 0; }
+  .banner .msg { flex: 1; }
+  .banner .msg strong { display: block; font-weight: 700; }
+  .banner .msg a { color: #fff; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .banner .msg a span { color: var(--orange); font-weight: 800; }
+  .banner .close { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; }
+  .banner.hidden { display: none; }
+
+  /* ===== Content ===== */
+  .view { padding: 16px 16px 24px; display: none; }
+  .view.active { display: block; }
+  .greet { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+  .phone-picker {
+    display: inline-flex; align-items: center; gap: 8px; background: #fff;
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px;
+    font-size: 14px; font-weight: 500; cursor: pointer; color: var(--ink);
+    position: relative;
+  }
+  .phone-menu {
+    position: absolute; top: calc(100% + 4px); left: 0; background: #fff;
+    border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    min-width: 180px; z-index: 20; display: none; overflow: hidden;
+  }
+  .phone-menu.open { display: block; }
+  .phone-menu div { padding: 10px 14px; font-size: 14px; cursor: pointer; }
+  .phone-menu div:hover { background: var(--bg); }
+  .phone-menu div.sel { color: var(--blue); font-weight: 600; }
+
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 26px 0 10px; }
+  .sec-head h3 { font-size: 12px; letter-spacing: 1.2px; color: var(--ink); font-weight: 700; }
+  .sec-head a { color: var(--blue); font-size: 13.5px; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .sec-head a::after { content: '›'; color: var(--orange); font-size: 18px; font-weight: 700; }
+
+  .card {
+    background: #fff; border-radius: 14px; padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .card + .card { margin-top: 12px; }
+
+  .bill-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .bill-top .lbl { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .bill-top .amt { font-size: 26px; font-weight: 800; color: var(--navy); }
+  .bill-top .amt sup { font-size: 14px; font-weight: 700; }
+  .autopay { display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .autopay .on { color: var(--blue); font-weight: 700; }
+  .autopay.off .on { color: var(--grey); }
+  .autopay a { color: var(--blue); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; }
+  .autopay svg { width: 14px; height: 14px; }
+  .bill-note { font-size: 12.5px; color: var(--grey); margin: 12px 0; }
+
+  /* swipe to pay */
+  .swipe {
+    position: relative; background: var(--orange); border-radius: 999px;
+    height: 54px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 15px; overflow: hidden;
+    user-select: none; touch-action: none; margin-bottom: 12px;
+  }
+  .swipe.done { background: #1d7a3d; pointer-events: none; }
+  .swipe .thumb {
+    position: absolute; left: 5px; top: 5px; width: 44px; height: 44px;
+    background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: var(--orange); font-size: 20px; font-weight: 800; cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25); z-index: 2;
+  }
+  .swipe.done .thumb { color: #1d7a3d; left: auto; right: 5px; }
+  .swipe .fill { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255,255,255,.22); width: 0; }
+  .swipe .hint { transition: opacity .2s; }
+
+  .btn-outline {
+    display: flex; align-items: center; justify-content: center; width: 100%;
+    padding: 14px; border: 1.5px solid var(--orange); border-radius: 999px;
+    background: #fff; color: var(--ink); font-weight: 600; font-size: 15px; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-outline:hover { background: #fdf0e6; }
+  .btn-solid {
+    display: flex; align-items: center; justify-content: center; padding: 13px 22px;
+    border: none; border-radius: 999px; background: var(--orange); color: #fff;
+    font-weight: 600; font-size: 14.5px; cursor: pointer; transition: background .15s;
+  }
+  .btn-solid:hover { background: var(--orange-dark); }
+  .bill-period { text-align: center; font-size: 12.5px; color: var(--grey); margin-top: 12px; }
+
+  /* usage */
+  .seg {
+    display: flex; background: #fff; border-radius: 999px; padding: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 14px;
+  }
+  .seg button {
+    flex: 1; border: none; border-radius: 999px; padding: 9px 0;
+    font-size: 13.5px; font-weight: 600; background: none; color: var(--grey);
+    cursor: pointer; transition: all .15s;
+  }
+  .seg button.sel { background: var(--navy); color: #fff; }
+  .usage-big { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .usage-big span { font-size: 14px; font-weight: 500; color: var(--grey); }
+  .bar { height: 10px; background: #ececec; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+  .bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--blue), var(--orange)); transition: width .4s ease; }
+  .tiles { display: flex; gap: 10px; margin-bottom: 12px; }
+  .tile { flex: 1; background: #f5f5f5; border-radius: 10px; padding: 12px; text-align: center; }
+  .tile b { display: block; font-size: 16px; color: var(--navy); }
+  .tile span { font-size: 11px; color: var(--grey); }
+  .usage-note { font-size: 13px; color: var(--grey); margin-bottom: 14px; }
+  .need { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .need p { font-size: 14px; color: var(--orange); font-weight: 700; }
+
+  /* services */
+  .svc { margin-bottom: 10px; }
+  .svc .lbl { font-size: 12px; letter-spacing: 1px; color: var(--grey); font-weight: 700; margin-bottom: 6px; }
+  .svc h4 { font-size: 15.5px; font-weight: 700; margin-bottom: 2px; }
+  .svc .price { font-size: 17px; font-weight: 800; margin: 6px 0 2px; }
+  .svc p { font-size: 12.5px; color: var(--grey); line-height: 1.5; }
+  .svc .btn-outline { margin-top: 14px; font-size: 14px; padding: 11px; }
+  .two-col { display: flex; gap: 12px; }
+  .two-col .card { flex: 1; margin-top: 0; }
+
+  /* offers */
+  .offers { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .offer {
+    min-width: 240px; background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06); cursor: pointer; flex-shrink: 0;
+  }
+  .offer .img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .offer .body { padding: 14px; }
+  .offer .tag { font-size: 10px; letter-spacing: 1.2px; color: var(--orange); font-weight: 800; margin-bottom: 6px; }
+  .offer h4 { font-size: 14.5px; font-weight: 700; line-height: 1.35; margin-bottom: 6px; }
+  .offer p { font-size: 12px; color: var(--grey); line-height: 1.45; margin-bottom: 10px; }
+  .offer .btn-solid { width: 100%; font-size: 13px; padding: 10px; }
+
+  /* bottom nav */
+  .bottom-nav {
+    flex-shrink: 0; display: flex; background: #fff; border-top: 1px solid var(--line);
+    padding: 8px 4px 20px; position: relative;
+  }
+  .bottom-nav button {
+    flex: 1; background: none; border: none; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; font-size: 11px; color: var(--ink); cursor: pointer;
+    font-family: inherit;
+  }
+  .bottom-nav button svg { width: 24px; height: 24px; }
+  .bottom-nav button.sel { color: var(--orange); font-weight: 600; }
+  .bottom-nav button.sel::before {
+    content: ''; position: absolute; top: 0; width: 44px; height: 3px;
+    background: var(--orange); border-radius: 0 0 3px 3px;
+  }
+  .bottom-nav button { position: relative; }
+  .nav-shop {
+    margin-top: -26px;
+  }
+  .nav-shop .bag {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--navy-deep);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25); border: 4px solid var(--bg);
+  }
+  .nav-shop .bag svg { width: 24px; height: 24px; }
+  .nav-shop.sel { color: var(--ink); }
+
+  /* sub pages */
+  .sub-head { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; }
+  .sub-head h2 { font-size: 18px; font-weight: 700; }
+  .kv { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .kv:last-child { border: none; }
+  .kv .k { color: var(--grey); }
+  .kv .v { font-weight: 600; }
+  .row-link {
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+    padding: 14px 0; background: none; border: none; border-bottom: 1px solid var(--line);
+    font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; text-align: left;
+    font-family: inherit;
+  }
+  .row-link::after { content: '›'; color: var(--orange); font-size: 18px; font-weight: 700; }
+  .plan-opt {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px; border: 1.5px solid var(--line); border-radius: 12px; margin-top: 10px;
+    cursor: pointer; background: #fff;
+  }
+  .plan-opt.sel { border-color: var(--orange); background: #fdf6f0; }
+  .plan-opt b { font-size: 14.5px; }
+  .plan-opt span { font-size: 13px; color: var(--grey); display: block; }
+  .plan-opt .p { font-weight: 800; font-size: 16px; white-space: nowrap; }
+  .switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; cursor: pointer; }
+  .switch input { display: none; }
+  .switch i {
+    position: absolute; inset: 0; background: #ccc; border-radius: 99px; transition: .2s;
+  }
+  .switch i::after {
+    content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+    background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  }
+  .switch input:checked + i { background: #1d7a3d; }
+  .switch input:checked + i::after { left: 23px; }
+  .hist-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .hist-row .d { font-weight: 600; }
+  .hist-row .a { font-weight: 700; }
+  .hist-row button { background: none; border: none; color: var(--blue); font-size: 18px; cursor: pointer; padding: 2px 6px; }
+
+  .toast {
+    position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: #fff; font-size: 13.5px; padding: 10px 18px;
+    border-radius: 99px; opacity: 0; transition: all .25s; z-index: 30; white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 460px) { .device { width: 100%; height: 90vh; } }
+</style>
+</head>
+<body>
+<header class="proto-header">
+  <a href="/">&larr; Back to projects</a>
+</header>
+<main>
+  <div class="device">
+    <div class="screen">
+
+      <div class="statusbar">
+        <span id="clock">9:41</span>
+        <span class="icons">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM8 5.5c1.7 0 3.2.6 4.3 1.7l-1.4 1.4A4.1 4.1 0 0 0 8 7.5c-1.1 0-2.1.4-2.9 1.1L3.7 7.2A6 6 0 0 1 8 5.5zM8 1c2.9 0 5.6 1.1 7.6 3l-1.4 1.4A8.1 8.1 0 0 0 8 3C6 3 4.1 3.9 2.8 5.4L1.4 4A11.3 11.3 0 0 1 8 1z"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <div class="app-header">
+        <div class="logo">Free<em>dom</em></div>
+        <div class="hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>
         </div>
       </div>
-    </main>
-  </body>
+
+      <div class="banner" id="banner">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-5h6v5"/></svg>
+        <div class="msg"><strong>Good news!</strong> Freedom Home Internet is now available in your area. <a href="#" onclick="toast('Opening Home Internet offers');return false">Learn more <span>›</span></a></div>
+        <button class="close" onclick="document.getElementById('banner').classList.add('hidden')" aria-label="Dismiss">×</button>
+      </div>
+
+      <div class="app-scroll">
+
+        <!-- ============ HOME ============ -->
+        <section class="view active" id="v-home">
+          <p class="greet">Hi, Bartholomew</p>
+          <div class="phone-picker" id="phonePicker" onclick="event.stopPropagation();document.getElementById('phoneMenu').classList.toggle('open')">
+            <span id="phoneNum">(416) 721-8594</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#db5c05" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+            <div class="phone-menu" id="phoneMenu">
+              <div class="sel" onclick="pickPhone('(416) 721-8594', this)">(416) 721-8594</div>
+              <div onclick="pickPhone('(647) 555-0142', this)">(647) 555-0142</div>
+            </div>
+          </div>
+
+          <div class="sec-head"><h3>MY BILL</h3><a onclick="go('billing')">View billing details</a></div>
+          <div class="card">
+            <div class="bill-top">
+              <span class="lbl">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d2b45" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                Upcoming payment:
+              </span>
+              <span class="amt" id="billAmt">$170<sup>.63</sup></span>
+            </div>
+            <div class="autopay" id="autopayRow">
+              <span>Auto Pay: <b class="on" id="autopayState">ON</b></span>
+              <a onclick="toggleAutopay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Manage Auto Pay</a>
+            </div>
+            <p class="bill-note" id="autopayNote">Your payment will be automatically withdrawn on Jan. 07, 2026</p>
+            <div class="swipe" id="swipe">
+              <div class="fill" id="swipeFill"></div>
+              <div class="thumb" id="swipeThumb">›</div>
+              <span class="hint" id="swipeHint">Swipe to pay now</span>
+            </div>
+            <button class="btn-outline" onclick="toast('Bill downloaded as PDF')">Download bill (.pdf)</button>
+            <p class="bill-period">Billing period Dec. 25, 2025 - Jan. 24, 2026</p>
+          </div>
+
+          <div class="sec-head"><h3>MY USAGE</h3><a onclick="go('usage')">View all usage details</a></div>
+          <div class="card">
+            <div class="seg">
+              <button class="sel" id="segNat" onclick="seg('nat')">Freedom Nationwide</button>
+              <button id="segRoam" onclick="seg('roam')">Roam Beyond</button>
+            </div>
+            <div class="usage-big"><span id="usageUsed">45GB used</span><span id="usageTotal"> / 50GB total</span></div>
+            <div class="bar"><i id="usageBar" style="width:90%"></i></div>
+            <div class="tiles">
+              <div class="tile"><b id="t1">63 MIN</b><span>Unlimited Talk</span></div>
+              <div class="tile"><b id="t2">1000</b><span>Unlimited Text</span></div>
+              <div class="tile"><b id="t3">0 GB</b><span>Roaming</span></div>
+            </div>
+            <p class="usage-note" id="resetNote">Your plan data will reset in 11 day(s).</p>
+            <div class="need">
+              <p>Need more data?</p>
+              <button class="btn-solid" id="passBtn" onclick="addPass()">Add a one-time pass</button>
+            </div>
+          </div>
+
+          <div class="sec-head"><h3>MY SERVICES</h3><a onclick="go('services')">View service details</a></div>
+          <div class="two-col">
+            <div class="card svc">
+              <div class="lbl">MY PLAN</div>
+              <h4 id="planName">Can-U.S.-Mex 50GB + 5G</h4>
+              <div class="price" id="planPrice">$45/mo.</div>
+              <p>Activation date: Sep. 25, 2019</p>
+              <button class="btn-outline" onclick="go('services')">Change plan</button>
+            </div>
+            <div class="card svc">
+              <div class="lbl">MY DEVICE</div>
+              <h4>You brought your own device</h4>
+              <div class="price">$0/mo.</div>
+              <p>You may be eligible for a hardware upgrade.</p>
+              <button class="btn-outline" onclick="go('shop')">Shop devices</button>
+            </div>
+          </div>
+
+          <div class="sec-head"><h3>LATEST OFFERS</h3><a onclick="go('shop')">View all offers</a></div>
+          <div class="offers" id="homeOffers"></div>
+        </section>
+
+        <!-- ============ SERVICES ============ -->
+        <section class="view" id="v-services">
+          <div class="sub-head"><h2>My Services</h2></div>
+          <div class="card svc">
+            <div class="lbl">MY PLAN</div>
+            <h4 id="svcPlanName">Can-U.S.-Mex 50GB + 5G</h4>
+            <div class="price" id="svcPlanPrice">$45/mo.</div>
+            <div class="kv"><span class="k">Activation date</span><span class="v">Sep. 25, 2019</span></div>
+            <div class="kv"><span class="k">Data</span><span class="v" id="svcData">50GB + 5G</span></div>
+            <div class="kv"><span class="k">Coverage</span><span class="v">Canada-U.S.-Mexico</span></div>
+            <div class="kv"><span class="k">Talk &amp; Text</span><span class="v">Unlimited</span></div>
+          </div>
+          <div class="card">
+            <div class="lbl" style="font-size:12px;letter-spacing:1px;color:var(--grey);font-weight:700;margin-bottom:8px">ADD-ONS</div>
+            <button class="row-link" onclick="toast('Watch plan details')">Watch plan</button>
+            <button class="row-link" onclick="toast('Phone Protection details')">Basic Phone Protection</button>
+            <button class="row-link" onclick="toast('Manage add-ons')">Manage add-ons</button>
+          </div>
+          <div class="card">
+            <div class="lbl" style="font-size:12px;letter-spacing:1px;color:var(--grey);font-weight:700;margin-bottom:4px">CHANGE PLAN</div>
+            <div class="plan-opt sel" data-p="Can-U.S.-Mex 50GB + 5G|$45/mo.|50GB + 5G" onclick="pickPlan(this)">
+              <div><b>Can-U.S.-Mex 50GB + 5G</b><span>Canada-U.S.-Mexico</span></div><span class="p">$45/mo.</span>
+            </div>
+            <div class="plan-opt" data-p="Total Freedom 125GB|$55/mo.|125GB + 5G" onclick="pickPlan(this)">
+              <div><b>Total Freedom 125GB</b><span>Nationwide + Roam Beyond</span></div><span class="p">$55/mo.</span>
+            </div>
+            <div class="plan-opt" data-p="Total Freedom 250GB|$75/mo.|250GB + 5G" onclick="pickPlan(this)">
+              <div><b>Total Freedom 250GB</b><span>Nationwide + Roam Beyond</span></div><span class="p">$75/mo.</span>
+            </div>
+            <button class="btn-solid" style="width:100%;margin-top:14px" onclick="applyPlan()">Confirm change</button>
+          </div>
+        </section>
+
+        <!-- ============ SHOP ============ -->
+        <section class="view" id="v-shop">
+          <div class="sub-head"><h2>Shop</h2></div>
+          <div class="offers" id="shopOffers" style="flex-wrap:wrap;overflow:visible"></div>
+        </section>
+
+        <!-- ============ USAGE ============ -->
+        <section class="view" id="v-usage">
+          <div class="sub-head"><h2>Usage Details</h2></div>
+          <div class="card">
+            <div class="seg">
+              <button class="sel" id="segNat2" onclick="seg('nat')">Freedom Nationwide</button>
+              <button id="segRoam2" onclick="seg('roam')">Roam Beyond</button>
+            </div>
+            <div class="usage-big"><span id="usageUsed2">45GB used</span><span id="usageTotal2"> / 50GB total</span></div>
+            <div class="bar"><i id="usageBar2" style="width:90%"></i></div>
+            <div class="kv"><span class="k">Data used</span><span class="v" id="dUsed">45 GB</span></div>
+            <div class="kv"><span class="k">Data remaining</span><span class="v" id="dLeft">5 GB</span></div>
+            <div class="kv"><span class="k">Talk minutes</span><span class="v" id="dTalk">63 min (Unlimited)</span></div>
+            <div class="kv"><span class="k">Texts sent</span><span class="v" id="dText">1000 (Unlimited)</span></div>
+            <div class="kv"><span class="k">Roaming data</span><span class="v" id="dRoam">0 GB</span></div>
+            <p class="usage-note" style="margin-top:12px" id="resetNote2">Your plan data will reset in 11 day(s).</p>
+            <div class="need">
+              <p>Need more data?</p>
+              <button class="btn-solid" onclick="addPass()">Add a one-time pass</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BILLING ============ -->
+        <section class="view" id="v-billing">
+          <div class="sub-head"><h2>Billing</h2></div>
+          <div class="card">
+            <div class="bill-top">
+              <span class="lbl">Upcoming payment:</span>
+              <span class="amt" id="billAmt2">$170<sup>.63</sup></span>
+            </div>
+            <div class="kv"><span class="k">Due date</span><span class="v">Jan. 07, 2026</span></div>
+            <div class="kv"><span class="k">Billing period</span><span class="v">Dec. 25 – Jan. 24</span></div>
+            <div class="kv"><span class="k">Auto Pay</span><span class="v" id="autopayState2">ON</span>
+              <label class="switch"><input type="checkbox" id="autopaySwitch" checked onchange="setAutopay(this.checked)"><i></i></label>
+            </div>
+            <button class="btn-solid" style="width:100%;margin-top:12px" onclick="toast('Payment method updated')">Update payment method</button>
+          </div>
+          <div class="card">
+            <div class="lbl" style="font-size:12px;letter-spacing:1px;color:var(--grey);font-weight:700;margin-bottom:4px">PAYMENT METHOD</div>
+            <div class="kv"><span class="k">Card</span><span class="v">Visa •••• 4242</span></div>
+            <div class="kv"><span class="k">Cardholder</span><span class="v">B. Simpson</span></div>
+          </div>
+          <div class="card">
+            <div class="lbl" style="font-size:12px;letter-spacing:1px;color:var(--grey);font-weight:700;margin-bottom:4px">BILL HISTORY</div>
+            <div class="hist-row"><span class="d">Dec. 2025</span><span><span class="a">$170.63</span> <button onclick="toast('December bill downloaded')">⭳</button></span></div>
+            <div class="hist-row"><span class="d">Nov. 2025</span><span><span class="a">$170.63</span> <button onclick="toast('November bill downloaded')">⭳</button></span></div>
+            <div class="hist-row"><span class="d">Oct. 2025</span><span><span class="a">$164.20</span> <button onclick="toast('October bill downloaded')">⭳</button></span></div>
+            <div class="hist-row" style="border:none"><span class="d">Sep. 2025</span><span><span class="a">$164.20</span> <button onclick="toast('September bill downloaded')">⭳</button></span></div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- bottom nav -->
+      <nav class="bottom-nav">
+        <button class="sel" data-v="home" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+          Home
+        </button>
+        <button data-v="services" onclick="go('services')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg>
+          Services
+        </button>
+        <button class="nav-shop" data-v="shop" onclick="go('shop')">
+          <span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="#db5c05" stroke-width="1.8"><path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>
+        </button>
+        <button data-v="usage" onclick="go('usage')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.2 15A9 9 0 1 1 9 2.8"/><path d="M22 2v7h-7"/></svg>
+          Usage
+        </button>
+        <button data-v="billing" onclick="go('billing')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h3"/></svg>
+          Billing
+        </button>
+      </nav>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let toastTimer;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- nav ---------- */
+function go(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  $('v-' + v).classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('sel', b.dataset.v === v));
+  document.querySelector('.app-scroll').scrollTop = 0;
+}
+
+/* ---------- phone picker ---------- */
+function pickPhone(num, el) {
+  $('phoneNum').textContent = num;
+  el.parentElement.querySelectorAll('div').forEach(d => d.classList.remove('sel'));
+  el.classList.add('sel');
+  $('phoneMenu').classList.remove('open');
+  toast('Switched to ' + num);
+}
+document.addEventListener('click', () => $('phoneMenu').classList.remove('open'));
+
+/* ---------- autopay ---------- */
+let autopay = true;
+function setAutopay(on) {
+  autopay = on;
+  $('autopayState').textContent = on ? 'ON' : 'OFF';
+  $('autopayState2').textContent = on ? 'ON' : 'OFF';
+  $('autopaySwitch').checked = on;
+  $('autopayNote').textContent = on
+    ? 'Your payment will be automatically withdrawn on Jan. 07, 2026'
+    : 'Auto Pay is off — pay your bill manually by Jan. 07, 2026';
+  toast('Auto Pay turned ' + (on ? 'ON' : 'OFF'));
+}
+function toggleAutopay() { setAutopay(!autopay); }
+
+/* ---------- swipe to pay ---------- */
+const swipe = $('swipe'), thumb = $('swipeThumb'), fill = $('swipeFill'), hint = $('swipeHint');
+let dragging = false, startX = 0, cur = 0;
+const maxDrag = () => swipe.clientWidth - thumb.offsetWidth - 10;
+thumb.addEventListener('pointerdown', e => {
+  if (swipe.classList.contains('done')) return;
+  dragging = true; startX = e.clientX - cur; thumb.setPointerCapture(e.pointerId);
+  thumb.style.cursor = 'grabbing';
+});
+thumb.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  cur = Math.max(0, Math.min(e.clientX - startX, maxDrag()));
+  thumb.style.left = (5 + cur) + 'px';
+  fill.style.width = (5 + cur + 44) + 'px';
+});
+thumb.addEventListener('pointerup', () => {
+  if (!dragging) return;
+  dragging = false; thumb.style.cursor = 'grab';
+  if (cur > maxDrag() * 0.8) {
+    thumb.style.left = 'auto'; thumb.style.right = '5px'; thumb.textContent = '✓';
+    fill.style.width = '100%';
+    swipe.classList.add('done');
+    hint.textContent = 'Payment of $170.63 scheduled';
+    toast('Payment scheduled for Jan. 07, 2026');
+  } else {
+    cur = 0; thumb.style.left = '5px'; fill.style.width = '0';
+  }
+});
+
+/* ---------- usage ---------- */
+const usage = {
+  nat:  { used: 45, total: 50, t: ['63 MIN','1000','0 GB'], reset: 'Your plan data will reset in 11 day(s).' },
+  roam: { used: 0,  total: 5,  t: ['0 MIN','0','5 GB incl.'], reset: 'Roam Beyond data renews with your plan.' },
+};
+let passes = 0;
+let region = 'nat';
+function renderUsage() {
+  const u = usage[region];
+  const total = u.total + (region === 'nat' ? passes : 0);
+  const pct = Math.min(100, u.used / total * 100);
+  const usedTxt = u.used + 'GB used', totalTxt = ' / ' + total + 'GB total';
+  ['', '2'].forEach(s => {
+    $('usageUsed' + s).textContent = usedTxt;
+    $('usageTotal' + s).textContent = totalTxt;
+    $('usageBar' + s).style.width = pct + '%';
+    $('resetNote' + s).textContent = u.reset;
+  });
+  $('t1').textContent = u.t[0]; $('t2').textContent = u.t[1]; $('t3').textContent = u.t[2];
+  $('dUsed').textContent = u.used + ' GB';
+  $('dLeft').textContent = (total - u.used) + ' GB';
+  $('dTalk').textContent = region === 'nat' ? '63 min (Unlimited)' : '0 min';
+  $('dText').textContent = region === 'nat' ? '1000 (Unlimited)' : '0';
+  $('dRoam').textContent = region === 'nat' ? '0 GB' : u.used + ' GB';
+}
+function seg(r) {
+  region = r;
+  ['segNat','segNat2'].forEach(id => $(id).classList.toggle('sel', r === 'nat'));
+  ['segRoam','segRoam2'].forEach(id => $(id).classList.toggle('sel', r === 'roam'));
+  renderUsage();
+}
+function addPass() {
+  passes += 5;
+  renderUsage();
+  toast('5GB one-time pass added');
+}
+
+/* ---------- offers ---------- */
+const offers = [
+  { tag: 'LIMITED TIME OFFER', h: 'Get iPhone 17 for Absolute $0 with TradeUp.', p: 'Get yours on us with a Total Freedom $80/mo. plan (with Digital Discount).', cta: 'Shop iPhone 17 (256GB)', bg: '#e8eef7', icon: '📱' },
+  { tag: 'BUILT-IN ESIM', h: 'Stay connected with eSIM — perfect for travel.', p: 'Seamless setup and instant activation on compatible devices.', cta: 'Shop eSIM', bg: '#fdeee2', icon: '🌐' },
+  { tag: 'ACCESSORY DEAL', h: 'Save 20% on cases & chargers this month.', p: 'Applied automatically at checkout on select accessories.', cta: 'Shop accessories', bg: '#eef6ee', icon: '🎧' },
+];
+function offerCard(o) {
+  return `<div class="offer" onclick="toast('${o.h.split('.')[0].replace(/'/g,"\\'")} — added to cart')">
+    <div class="img" style="background:${o.bg}">${o.icon}</div>
+    <div class="body"><div class="tag">${o.tag}</div><h4>${o.h}</h4><p>${o.p}</p>
+    <button class="btn-solid">${o.cta}</button></div></div>`;
+}
+$('homeOffers').innerHTML = offers.slice(0, 2).map(offerCard).join('');
+$('shopOffers').innerHTML = offers.map(offerCard).join('');
+
+/* ---------- plan picker ---------- */
+let pendingPlan = null;
+function pickPlan(el) {
+  document.querySelectorAll('.plan-opt').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  pendingPlan = el.dataset.p.split('|');
+}
+function applyPlan() {
+  if (!pendingPlan) { toast('Select a plan first'); return; }
+  const [name, price, data] = pendingPlan;
+  $('planName').textContent = name; $('planPrice').textContent = price;
+  $('svcPlanName').textContent = name; $('svcPlanPrice').textContent = price;
+  $('svcData').textContent = data;
+  toast('Plan changed to ' + name);
+}
+
+/* ---------- clock ---------- */
+function tick() {
+  const d = new Date();
+  $('clock').textContent = d.getHours() % 12 || 12;
+  $('clock').textContent = (d.getHours() % 12 || 12) + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+tick(); setInterval(tick, 30000);
+renderUsage();
+</script>
+</body>
 </html>
