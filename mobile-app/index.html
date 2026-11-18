@@ -226,10 +226,14 @@
   .two-col .card { flex: 1; margin-top: 0; }
 
   /* offers */
-  .offers { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .offers { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; scroll-snap-type: x mandatory; }
+  .offers::-webkit-scrollbar { display: none; }
+  .offer-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .offer-dots i { width: 6px; height: 6px; border-radius: 50%; background: #d4d4d4; transition: all .2s; }
+  .offer-dots i.on { background: var(--orange); width: 18px; border-radius: 3px; }
   .offer {
     min-width: 275px; max-width: 275px; background: #fff; border: 1px solid #e4e4e4;
-    border-radius: 20px; overflow: hidden; padding: 16px; cursor: pointer; flex-shrink: 0;
+    border-radius: 20px; overflow: hidden; padding: 16px; cursor: pointer; flex-shrink: 0; scroll-snap-align: start;
     display: flex; flex-direction: column; gap: 16px;
   }
   .offer .img { height: 105px; border-radius: 10px 10px 0 0; overflow: hidden; background: #f6f6f8; display: flex; align-items: center; justify-content: center; }
@@ -459,6 +463,7 @@
 
           <div class="sec-head"><h3>LATEST OFFERS</h3><a onclick="go('shop')">View all offers</a></div>
           <div class="offers" id="homeOffers"></div>
+          <div class="offer-dots" id="offerDots"></div>
         </section>
 
         <!-- ============ SERVICES ============ -->
@@ -719,12 +724,17 @@ const offers = [
   { tag: 'Add a Line', h: 'Save $10/mo. on every additional line.', p: 'Add lines to your account and save on each one — up to 4 lines.', cta: 'Add a line', promo: 'Multi-line Savings' },
 ];
 function offerCard(o) {
-  return `<div class="offer" onclick="toast('${o.h.split('.')[0].replace(/'/g,"\\'")} — added to cart')">
+  return `<div class="offer">
     <div class="img${o.promo ? ' promo' : ''}">${o.img ? `<img src="${o.img}" alt="">` : o.promo}</div>
     <div class="body"><div><div class="tag">${o.tag}</div><h4>${o.h}</h4></div><p>${o.p}</p></div>
     <button class="btn-solid">${o.cta}</button></div>`;
 }
 $('homeOffers').innerHTML = offers.map(offerCard).join('');
+$('offerDots').innerHTML = offers.map((_, i) => `<i${i === 0 ? ' class="on"' : ''}></i>`).join('');
+$('homeOffers').addEventListener('scroll', () => {
+  const idx = Math.round($('homeOffers').scrollLeft / 283);
+  $('offerDots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === idx));
+});
 $('shopOffers').innerHTML = offers.map(offerCard).join('');
 
 /* ---------- plan picker ---------- */
