@@ -18,9 +18,19 @@
     --bg: #f4f4f6;
   }
   @font-face {
-    font-family: 'Ambra';
-    src: url('assets/ambra-regular.woff2') format('woff2');
+    font-family: 'Ambra Sans Text';
+    src: url('assets/ambra-sans-text-book.woff2') format('woff2');
+    font-weight: 300;
+  }
+  @font-face {
+    font-family: 'Ambra Sans Text';
+    src: url('assets/ambra-sans-text-regular.woff2') format('woff2');
     font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Ambra Sans Text';
+    src: url('assets/ambra-sans-text-bold.woff2') format('woff2');
+    font-weight: 700;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   button, input, select { font-family: inherit; }
@@ -139,7 +149,7 @@
   .swipe .fill { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255,255,255,.22); width: 0; }
   .swipe .hint {
     transition: opacity .2s;
-    font-family: 'Ambra', sans-serif;
+    font-family: 'Ambra Sans Text', sans-serif;
     font-weight: 500;
     font-size: 16px;
     white-space: nowrap;
