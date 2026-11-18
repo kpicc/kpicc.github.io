@@ -132,19 +132,30 @@
   .swipe .fill { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255,255,255,.22); width: 0; }
   .swipe .hint { transition: opacity .2s; }
 
-  .btn-outline {
-    display: flex; align-items: center; justify-content: center; width: 100%;
-    padding: 14px; border: 1.5px solid var(--orange); border-radius: 999px;
-    background: #fff; color: var(--ink); font-weight: 600; font-size: 15px; cursor: pointer;
-    transition: background .15s;
+  /* Buttons — match design system fm-button variants (mobile = 14px) */
+  .btn-solid, .btn-outline {
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 999px; font-weight: 500; font-size: 14px;
+    padding: 12px 22px; cursor: pointer;
+    background-size: 200% 200%; background-repeat: no-repeat;
+    background-position: 0 0;
+    transition: background-position 300ms ease, color 300ms ease;
   }
-  .btn-outline:hover { background: #fdf0e6; }
   .btn-solid {
-    display: flex; align-items: center; justify-content: center; padding: 13px 22px;
-    border: none; border-radius: 999px; background: var(--orange); color: #fff;
-    font-weight: 600; font-size: 14.5px; cursor: pointer; transition: background .15s;
+    background-color: var(--orange); color: #fff;
+    background-image: linear-gradient(to top, #000 50%, transparent 50%);
   }
-  .btn-solid:hover { background: var(--orange-dark); }
+  .btn-solid:hover { background-position: 0 100%; }
+  .btn-outline {
+    width: 100%; padding: 12px;
+    background-color: #fff; color: var(--ink);
+    background-image: linear-gradient(to top, var(--orange) 50%, transparent 50%);
+    box-shadow: inset 0 0 0 1px var(--orange);
+  }
+  .btn-outline:hover { background-position: 0 100%; color: #fff; }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-solid, .btn-outline { transition: none; }
+  }
   .bill-period { text-align: center; font-size: 12.5px; color: var(--grey); margin-top: 12px; }
 
   /* usage */
