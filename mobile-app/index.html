@@ -356,13 +356,56 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* phone: landing (scaled frame) + opt-in full-screen prototype mode */
+  .proto-intro, .proto-bar, .proto-hint { display: none; }
   @media (max-width: 460px) {
     .proto-header { height: 48px; padding: 0 16px; display: flex; align-items: center; }
-    main { padding: 0 0 24px; }
-    .proto-wrap { width: 100%; }
-    .device { width: 100%; max-width: 100%; height: calc(100dvh - 48px); padding: 0; border-radius: 0; box-shadow: none; }
-    .device::before, .statusbar { display: none; }
-    .screen { border-radius: 0; }
+    main { padding: 20px 16px 32px; }
+    .proto-wrap { width: 100%; gap: 20px; }
+    .proto-intro { display: flex; flex-direction: column; gap: 8px; width: 100%; font-family: 'Ambra Sans Text', sans-serif; }
+    .proto-tag {
+      align-self: flex-start; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--orange); border: 1px solid var(--orange); border-radius: 999px; padding: 3px 10px;
+    }
+    .proto-intro h1 { font-size: 24px; line-height: 28px; font-weight: 500; color: #191919; }
+    .proto-intro p { font-size: 14px; line-height: 20px; color: #666; }
+    .proto-intro .proto-cta { width: 100%; height: 48px; margin-top: 8px; }
+    .device-fit { width: calc(390px * var(--fit, 1)); height: calc(844px * var(--fit, 1)); }
+    .device-fit .device { transform: scale(var(--fit, 1)); transform-origin: top left; }
+
+    body.proto-full { overflow: hidden; }
+    body.proto-full .proto-header, body.proto-full .proto-intro, body.proto-full .reset-proto { display: none; }
+    body.proto-full .device-fit {
+      position: fixed; inset: 0; width: auto; height: auto; z-index: 50;
+      display: flex; flex-direction: column; background: #111;
+    }
+    body.proto-full .device {
+      transform: none; width: 100%; flex: 1; min-height: 0; height: auto;
+      padding: 0; border-radius: 0; box-shadow: none;
+    }
+    body.proto-full .device::before, body.proto-full .statusbar { display: none; }
+    body.proto-full .screen { border-radius: 0; }
+    .screen { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    body.proto-full .proto-bar {
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+      height: 44px; padding: 0 10px 0 14px; color: #fff;
+      font-family: 'Ambra Sans Text', sans-serif; font-size: 13px;
+    }
+    .proto-bar-lbl { display: flex; align-items: center; gap: 8px; }
+    .proto-bar-lbl i { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+    .proto-bar-actions { display: flex; gap: 6px; }
+    .proto-bar-actions button {
+      height: 30px; padding: 0 12px; border: none; border-radius: 999px; cursor: pointer;
+      background: rgba(255,255,255,.14); color: #fff; font-size: 13px; font-weight: 500;
+    }
+    body.proto-full .proto-hint {
+      display: block; position: absolute; bottom: 104px; left: 50%; z-index: 60;
+      transform: translate(-50%, 8px); width: max-content; max-width: calc(100% - 32px);
+      background: rgba(17,17,17,.92); color: #fff; border-radius: 12px; padding: 10px 14px;
+      font-family: 'Ambra Sans Text', sans-serif; font-size: 13px; line-height: 18px; text-align: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
+    }
+    body.proto-full .proto-hint.show { opacity: 1; transform: translate(-50%, 0); }
   }
   @media (max-width: 760px) { main { flex-direction: column; gap: 24px; } }
 </style>
@@ -373,6 +416,18 @@
 </header>
 <main>
   <div class="proto-wrap">
+  <div class="proto-intro">
+    <span class="proto-tag">Concept prototype</span>
+    <h1>Freedom Mobile App</h1>
+    <p>A concept for the Freedom My Account app: billing and Auto Pay, usage, plan and device management, and offers. This is a design prototype, not a live app.</p>
+    <button class="btn-solid proto-cta" onclick="enterProto()">Try the interactive prototype</button>
+  </div>
+  <div class="device-fit">
+  <div class="proto-bar">
+    <span class="proto-bar-lbl"><i></i>Concept prototype</span>
+    <span class="proto-bar-actions"><button onclick="resetProto()">Reset</button><button onclick="exitProto()">Exit &#10005;</button></span>
+  </div>
+  <div class="proto-hint" id="protoHint">Explore freely: swipe to pay, switch tabs, browse offers.</div>
   <div class="device">
     <div class="screen">
 
@@ -597,6 +652,7 @@
       <div class="toast" id="toast"></div>
     </div>
   </div>
+  </div>
   <button class="reset-proto" onclick="resetProto()">Reset prototype</button>
   </div>
 </main>
@@ -611,7 +667,42 @@ function save() { localStorage.setItem(SKEY, JSON.stringify(state)); }
 function loadState() {
   try { Object.assign(state, JSON.parse(localStorage.getItem(SKEY)) || {}); } catch (e) {}
 }
-function resetProto() { localStorage.removeItem(SKEY); location.reload(); }
+function resetProto() {
+  localStorage.removeItem(SKEY);
+  if (document.body.classList.contains('proto-full')) sessionStorage.setItem('fmResume', '1');
+  location.reload();
+}
+
+/* ---------- phone presentation: scaled frame + full-screen mode ---------- */
+const phoneMQ = matchMedia('(max-width: 460px)');
+window.uiScale = 1;
+function fitDevice() {
+  const full = document.body.classList.contains('proto-full');
+  const s = phoneMQ.matches ? Math.min(1, document.querySelector('.proto-wrap').clientWidth / 390) : 1;
+  document.documentElement.style.setProperty('--fit', s);
+  window.uiScale = phoneMQ.matches && !full ? s : 1;
+  if (typeof fitNav === 'function') fitNav();
+}
+function enterProto(skipPush) {
+  document.body.classList.add('proto-full');
+  fitDevice();
+  if (!skipPush) history.pushState({ proto: 1 }, '');
+  if (!sessionStorage.getItem('fmHint')) {
+    sessionStorage.setItem('fmHint', '1');
+    const h = $('protoHint');
+    setTimeout(() => h.classList.add('show'), 300);
+    setTimeout(() => h.classList.remove('show'), 4300);
+  }
+}
+function exitProto(fromPop) {
+  document.body.classList.remove('proto-full');
+  fitDevice();
+  if (!fromPop && history.state && history.state.proto) history.back();
+}
+addEventListener('popstate', () => {
+  if (document.body.classList.contains('proto-full')) exitProto(true);
+});
+addEventListener('resize', fitDevice);
 
 let toastTimer;
 function toast(msg) {
@@ -670,12 +761,12 @@ let dragging = false, startX = 0, cur = 0;
 const maxDrag = () => swipe.clientWidth - thumb.offsetWidth - 10;
 thumb.addEventListener('pointerdown', e => {
   if (swipe.classList.contains('done')) return;
-  dragging = true; startX = e.clientX - cur; thumb.setPointerCapture(e.pointerId);
+  dragging = true; startX = e.clientX / uiScale - cur; thumb.setPointerCapture(e.pointerId);
   thumb.style.cursor = 'grabbing';
 });
 thumb.addEventListener('pointermove', e => {
   if (!dragging) return;
-  cur = Math.max(0, Math.min(e.clientX - startX, maxDrag()));
+  cur = Math.max(0, Math.min(e.clientX / uiScale - startX, maxDrag()));
   thumb.style.left = (5 + cur) + 'px';
   fill.style.width = (5 + cur + 44) + 'px';
 });
@@ -809,6 +900,11 @@ if (state.plan) {
   document.querySelectorAll('.plan-opt').forEach(p =>
     p.classList.toggle('sel', p.dataset.p === state.plan.join('|')));
   pendingPlan = state.plan;
+}
+fitDevice();
+if (sessionStorage.getItem('fmResume')) {
+  sessionStorage.removeItem('fmResume');
+  enterProto(history.state && history.state.proto);
 }
 go('home');
 renderUsage();
