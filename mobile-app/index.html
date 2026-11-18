@@ -617,7 +617,9 @@ thumb.addEventListener('pointerup', () => {
     fill.style.width = '100%';
     swipe.classList.add('done');
     hint.textContent = 'Payment accepted';
-    toast('Payment scheduled for Jan. 07, 2026');
+    $('billAmt').textContent = '$0';
+    $('billAmt2').textContent = '$0';
+    toast('Payment of $170.63 received');
   } else {
     cur = 0; thumb.style.left = '5px'; fill.style.width = '0';
   }
