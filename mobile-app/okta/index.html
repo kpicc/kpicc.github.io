@@ -85,6 +85,15 @@
       body.proto-mobile .proto-device { display: block; }
       body.proto-frame .proto-header { display: none; }
 
+      .proto-header-actions { display: flex; align-items: center; gap: 20px; }
+      .proto-reset {
+        border: none; background: none; padding: 0; cursor: pointer;
+        color: #156ba3; font-family: 'Ambra Sans Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px; font-weight: 500;
+      }
+      .proto-reset:hover { color: #0f4f7a; text-decoration: underline; }
+      .proto-reset--below { display: none; }
+
       /* phone: concept intro + scaled interactive frame (not the live site) */
       .proto-intro { display: none; }
       @media (max-width: 460px) {
@@ -103,6 +112,8 @@
         .proto-intro h1 { margin: 0; font-size: 24px; line-height: 28px; font-weight: 500; color: #191919; }
         .proto-intro p { margin: 0; font-size: 14px; line-height: 20px; color: #666; }
         body.proto-concept .proto-fit { width: calc(390px * var(--fit, 1)); height: calc(844px * var(--fit, 1)); }
+        body.proto-concept .proto-header .proto-reset { display: none; }
+        body.proto-concept .proto-reset--below { display: block; align-self: center; font-size: 16px; }
         body.proto-concept .proto-device {
           display: block; margin: 0; box-sizing: border-box;
           transform: scale(var(--fit, 1)); transform-origin: top left;
@@ -115,9 +126,12 @@
   <body>
     <header class="proto-header">
       <a href="/">&larr; Back to projects</a>
+      <div class="proto-header-actions">
+      <button type="button" class="proto-reset" onclick="resetProto()">Reset prototype</button>
       <div class="proto-view-toggle">
         <button type="button" data-view="desktop" class="active">Desktop</button>
         <button type="button" data-view="mobile">Mobile</button>
+      </div>
       </div>
     </header>
     <div class="proto-main">
@@ -128,8 +142,17 @@
       </div>
       <div id="root"></div>
       <div class="proto-fit"><div class="proto-device"><iframe title="Mobile preview"></iframe></div></div>
+      <button type="button" class="proto-reset proto-reset--below" onclick="resetProto()">Reset prototype</button>
     </div>
     <script>
+      function resetProto() {
+        Object.keys(sessionStorage).forEach(function (k) {
+          if (k.indexOf('okta') === 0) sessionStorage.removeItem(k);
+        });
+        localStorage.removeItem('oktaPasswordResetEmail');
+        if (document.body.classList.contains('proto-mobile')) sessionStorage.setItem('protoView', 'mobile');
+        location.replace(location.origin + location.pathname);
+      }
       (function () {
         if (new URLSearchParams(location.search).has('frame')) {
           document.body.classList.add('proto-frame');
@@ -150,6 +173,11 @@
         }
         fitPhone();
         addEventListener('resize', fitPhone);
+        if (sessionStorage.getItem('protoView') === 'mobile') {
+          sessionStorage.removeItem('protoView');
+          var mb = document.querySelector('.proto-view-toggle [data-view="mobile"]');
+          setTimeout(function () { mb.click(); });
+        }
         buttons.forEach(function (btn) {
           btn.addEventListener('click', function () {
             var mobile = btn.dataset.view === 'mobile';
