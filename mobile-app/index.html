@@ -45,7 +45,7 @@
   }
   .proto-header a { color: #111; text-decoration: none; font-size: 14px; font-weight: 500; }
   main { display: flex; align-items: center; justify-content: center; padding: 32px 16px 64px; }
-  .proto-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .proto-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 100%; min-width: 0; }
   .device {
     width: 390px; height: 844px; background: #111; border-radius: 44px;
     padding: 12px; box-shadow: 0 24px 48px rgba(0,0,0,.18); position: relative;
@@ -253,11 +253,11 @@
 
   /* bottom nav — pixel-matched to Figma node 5091:3936 */
   .bottom-nav {
-    flex-shrink: 0; position: relative; height: 79px;
+    flex-shrink: 0; position: relative; height: calc(85px * var(--nav-scale, 0.9313));
   }
   .nav-inner {
     position: absolute; left: 0; top: 0; width: 393px; height: 85px;
-    transform: scale(0.9313); transform-origin: top left;
+    transform: scale(var(--nav-scale, 0.9313)); transform-origin: top left;
   }
   .nav-bg {
     position: absolute; left: 0; top: 0; width: 100%; height: 85px; display: block;
@@ -356,7 +356,14 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  @media (max-width: 460px) { .device { width: 100%; height: 90vh; } }
+  @media (max-width: 460px) {
+    .proto-header { height: 48px; padding: 0 16px; display: flex; align-items: center; }
+    main { padding: 0 0 24px; }
+    .proto-wrap { width: 100%; }
+    .device { width: 100%; max-width: 100%; height: calc(100dvh - 48px); padding: 0; border-radius: 0; box-shadow: none; }
+    .device::before, .statusbar { display: none; }
+    .screen { border-radius: 0; }
+  }
   @media (max-width: 760px) { main { flex-direction: column; gap: 24px; } }
 </style>
 </head>
@@ -613,6 +620,12 @@ function toast(msg) {
 }
 
 /* ---------- nav ---------- */
+function fitNav() {
+  const nav = document.querySelector('.bottom-nav');
+  nav.style.setProperty('--nav-scale', nav.clientWidth / 393);
+}
+fitNav();
+addEventListener('resize', fitNav);
 function go(v) {
   const changing = !document.querySelector('.view.active') || document.querySelector('.view.active').id !== 'v-' + v;
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
