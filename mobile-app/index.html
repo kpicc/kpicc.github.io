@@ -659,15 +659,11 @@ thumb.addEventListener('pointerup', () => {
   if (!dragging) return;
   dragging = false; thumb.style.cursor = 'grab';
   if (cur > maxDrag() * 0.8) {
-    thumb.style.left = 'auto'; thumb.style.right = '5px'; thumb.textContent = '✓';
-    fill.style.width = '100%';
-    swipe.classList.add('done');
-    hint.textContent = 'Payment accepted';
-    $('billAmt').textContent = '$0';
-    $('billAmt2').textContent = '$0';
+    applyPaid();
     state.paid = true;
     save();
     toast('Payment of $170.63 received');
+    setTimeout(revertPaid, 3000);
   } else {
     cur = 0; thumb.style.left = '5px'; fill.style.width = '0';
   }
@@ -760,8 +756,20 @@ function applyPaid() {
   $('billAmt').textContent = '$0';
   $('billAmt2').textContent = '$0';
 }
+function revertPaid() {
+  cur = 0;
+  thumb.style.left = '5px'; thumb.style.right = 'auto';
+  thumb.innerHTML = '<i class="swipe-chev"></i>';
+  fill.style.width = '0';
+  swipe.classList.remove('done');
+  hint.textContent = 'Swipe to pay now';
+  $('billAmt').innerHTML = '$170<sup>.63</sup>';
+  $('billAmt2').innerHTML = '$170<sup>.63</sup>';
+  state.paid = false;
+  save();
+}
 loadState();
-if (state.paid) applyPaid();
+if (state.paid) { applyPaid(); setTimeout(revertPaid, 3000); }
 setAutopay(state.autopay, true);
 if (state.phone) $('phoneNum').textContent = state.phone;
 if (!state.banner) $('banner').classList.add('hidden');
