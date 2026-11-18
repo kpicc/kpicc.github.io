@@ -733,6 +733,23 @@ $('homeOffers').innerHTML = offers.map(offerCard).join('');
 $('offerDots').innerHTML = offers.map((_, i) => `<i${i === 0 ? ' class="on"' : ''}></i>`).join('');
 $('offerDots').querySelectorAll('i').forEach((d, i) =>
   d.addEventListener('click', () => $('homeOffers').scrollTo({ left: i * 283, behavior: 'smooth' })));
+const car = $('homeOffers');
+let carDrag = null;
+car.addEventListener('pointerdown', e => {
+  carDrag = { x: e.clientX, sl: car.scrollLeft };
+  car.setPointerCapture(e.pointerId);
+  car.style.scrollSnapType = 'none';
+  car.style.scrollBehavior = 'auto';
+});
+car.addEventListener('pointermove', e => {
+  if (!carDrag) return;
+  car.scrollLeft = carDrag.sl - (e.clientX - carDrag.x);
+});
+['pointerup', 'pointercancel'].forEach(ev => car.addEventListener(ev, () => {
+  carDrag = null;
+  car.style.scrollSnapType = '';
+  car.style.scrollBehavior = '';
+}));
 $('homeOffers').addEventListener('scroll', () => {
   const idx = Math.round($('homeOffers').scrollLeft / 283);
   $('offerDots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === idx));
