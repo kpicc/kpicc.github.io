@@ -84,6 +84,30 @@
       body.proto-mobile #root { display: none; }
       body.proto-mobile .proto-device { display: block; }
       body.proto-frame .proto-header { display: none; }
+
+      /* phone: concept intro + scaled interactive frame (not the live site) */
+      .proto-intro { display: none; }
+      @media (max-width: 460px) {
+        body.proto-concept { background: #f4f4f6; }
+        body.proto-concept .proto-view-toggle { display: none; }
+        body.proto-concept #root { display: none; }
+        body.proto-concept .proto-main { padding: 20px 16px 32px; display: flex; flex-direction: column; gap: 20px; }
+        body.proto-concept .proto-intro {
+          display: flex; flex-direction: column; gap: 8px;
+          font-family: 'Ambra Sans Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        .proto-tag {
+          align-self: flex-start; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase;
+          color: #db5c05; border: 1px solid #db5c05; border-radius: 999px; padding: 3px 10px;
+        }
+        .proto-intro h1 { margin: 0; font-size: 24px; line-height: 28px; font-weight: 500; color: #191919; }
+        .proto-intro p { margin: 0; font-size: 14px; line-height: 20px; color: #666; }
+        body.proto-concept .proto-fit { width: calc(390px * var(--fit, 1)); height: calc(844px * var(--fit, 1)); }
+        body.proto-concept .proto-device {
+          display: block; margin: 0; box-sizing: border-box;
+          transform: scale(var(--fit, 1)); transform-origin: top left;
+        }
+      }
     </style>
     <script type="module" crossorigin src="/mobile-app/okta/assets/index-DsyKe9Nv.js"></script>
     <link rel="stylesheet" crossorigin href="/mobile-app/okta/assets/index-COKD45mf.css">
@@ -96,8 +120,15 @@
         <button type="button" data-view="mobile">Mobile</button>
       </div>
     </header>
-    <div id="root"></div>
-    <div class="proto-device"><iframe title="Mobile preview"></iframe></div>
+    <div class="proto-main">
+      <div class="proto-intro">
+        <span class="proto-tag">Concept prototype</span>
+        <h1>FM Login Migration (Okta)</h1>
+        <p>A user-testing prototype of the Okta sign-in migration: mobile login, verification, MFA setup, PIN reset and account linking. This is a design prototype, not the live Freedom sign-in.</p>
+      </div>
+      <div id="root"></div>
+      <div class="proto-fit"><div class="proto-device"><iframe title="Mobile preview"></iframe></div></div>
+    </div>
     <script>
       (function () {
         if (new URLSearchParams(location.search).has('frame')) {
@@ -106,13 +137,24 @@
         }
         var buttons = document.querySelectorAll('.proto-view-toggle button');
         var iframe = document.querySelector('.proto-device iframe');
+        var phone = matchMedia('(max-width: 460px)');
+        function frameSrc() {
+          if (!iframe.src) iframe.src = location.origin + location.pathname + '?frame=1';
+        }
+        function fitPhone() {
+          document.body.classList.toggle('proto-concept', phone.matches);
+          if (!phone.matches) return;
+          frameSrc();
+          var w = document.documentElement.clientWidth - 32;
+          document.documentElement.style.setProperty('--fit', Math.min(1, w / 390));
+        }
+        fitPhone();
+        addEventListener('resize', fitPhone);
         buttons.forEach(function (btn) {
           btn.addEventListener('click', function () {
             var mobile = btn.dataset.view === 'mobile';
             document.body.classList.toggle('proto-mobile', mobile);
-            if (mobile && !iframe.src) {
-              iframe.src = location.origin + location.pathname + '?frame=1';
-            }
+            if (mobile) frameSrc();
             buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
           });
         });
