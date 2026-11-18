@@ -586,6 +586,7 @@ function toast(msg) {
 
 /* ---------- nav ---------- */
 function go(v) {
+  const changing = !document.querySelector('.view.active') || document.querySelector('.view.active').id !== 'v-' + v;
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   $('v-' + v).classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('sel', b.dataset.v === v));
@@ -594,7 +595,7 @@ function go(v) {
     $('navDash').style.display = 'block';
     $('navDash').style.left = (selBtn.offsetLeft + selBtn.offsetWidth / 2 - 17) + 'px';
   } else { $('navDash').style.display = 'none'; }
-  document.querySelector('.app-scroll').scrollTop = 0;
+  if (changing) document.querySelector('.app-scroll').scrollTop = 0;
 }
 
 /* ---------- phone picker ---------- */
