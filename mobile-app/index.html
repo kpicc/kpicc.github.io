@@ -763,13 +763,9 @@ function revertPaid() {
   fill.style.width = '0';
   swipe.classList.remove('done');
   hint.textContent = 'Swipe to pay now';
-  $('billAmt').innerHTML = '$170<sup>.63</sup>';
-  $('billAmt2').innerHTML = '$170<sup>.63</sup>';
-  state.paid = false;
-  save();
 }
 loadState();
-if (state.paid) { applyPaid(); setTimeout(revertPaid, 3000); }
+if (state.paid) { $('billAmt').textContent = '$0'; $('billAmt2').textContent = '$0'; }
 setAutopay(state.autopay, true);
 if (state.phone) $('phoneNum').textContent = state.phone;
 if (!state.banner) $('banner').classList.add('hidden');
