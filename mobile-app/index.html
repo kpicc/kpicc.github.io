@@ -130,6 +130,11 @@
   .swipe.done .thumb { color: #1d7a3d; left: auto; right: 5px; }
   .swipe .fill { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255,255,255,.22); width: 0; }
   .swipe .hint { transition: opacity .2s; }
+  .swipe-chev {
+    width: 22px; height: 22px; display: block; background-color: var(--orange);
+    -webkit-mask: url('assets/chevron-right.svg') center / contain no-repeat;
+    mask: url('assets/chevron-right.svg') center / contain no-repeat;
+  }
 
   /* Buttons — match design system fm-button variants (mobile = 14px) */
   .btn-solid, .btn-outline {
@@ -360,7 +365,7 @@
             <p class="bill-note" id="autopayNote">Your payment will be automatically withdrawn on Jan. 07, 2026</p>
             <div class="swipe" id="swipe">
               <div class="fill" id="swipeFill"></div>
-              <div class="thumb" id="swipeThumb">›</div>
+              <div class="thumb" id="swipeThumb"><i class="swipe-chev"></i></div>
               <span class="hint" id="swipeHint">Swipe to pay now</span>
             </div>
             <button class="btn-outline" onclick="toast('Bill downloaded as PDF')">Download bill (.pdf)</button>
