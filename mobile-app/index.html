@@ -226,17 +226,20 @@
   .two-col .card { flex: 1; margin-top: 0; }
 
   /* offers */
-  .offers { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .offers { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
   .offer {
-    min-width: 240px; background: #fff; border-radius: 14px; overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06); cursor: pointer; flex-shrink: 0;
+    min-width: 275px; max-width: 275px; background: #fff; border: 1px solid #e4e4e4;
+    border-radius: 20px; overflow: hidden; padding: 16px; cursor: pointer; flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 16px;
   }
-  .offer .img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
-  .offer .body { padding: 14px; }
-  .offer .tag { font-size: 10px; letter-spacing: 1.2px; color: var(--orange); font-weight: 800; margin-bottom: 6px; }
-  .offer h4 { font-size: 14.5px; font-weight: 700; line-height: 1.35; margin-bottom: 6px; }
-  .offer p { font-size: 12px; color: var(--grey); line-height: 1.45; margin-bottom: 10px; }
-  .offer .btn-solid { width: 100%; font-size: 13px; padding: 10px; }
+  .offer .img { height: 105px; border-radius: 10px 10px 0 0; overflow: hidden; background: #f6f6f8; display: flex; align-items: center; justify-content: center; }
+  .offer .img img { width: 100%; height: 100%; object-fit: contain; }
+  .offer .img.promo { background: linear-gradient(100deg, #00598e, #000); color: #fff; font-family: 'Ambra Sans Text', sans-serif; font-size: 15px; font-weight: 500; text-align: center; padding: 0 20px; }
+  .offer .body { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .offer .tag { font-size: 12px; letter-spacing: 1.2px; color: var(--orange); font-weight: 400; text-transform: uppercase; }
+  .offer h4 { font-size: 18px; font-weight: 500; line-height: 24px; color: #191919; }
+  .offer p { font-size: 14px; color: #666; line-height: 20px; flex: 1; }
+  .offer .btn-solid { width: 100%; height: 44px; font-size: 14px; padding: 6px 8px; }
 
   /* bottom nav — pixel-matched to Figma node 5091:3936 */
   .bottom-nav {
@@ -709,17 +712,19 @@ renderUsage();
 
 /* ---------- offers ---------- */
 const offers = [
-  { tag: 'LIMITED TIME OFFER', h: 'Get iPhone 17 for Absolute $0 with TradeUp.', p: 'Get yours on us with a Total Freedom $80/mo. plan (with Digital Discount).', cta: 'Shop iPhone 17 (256GB)', bg: '#e8eef7', icon: '📱' },
-  { tag: 'BUILT-IN ESIM', h: 'Stay connected with eSIM — perfect for travel.', p: 'Seamless setup and instant activation on compatible devices.', cta: 'Shop eSIM', bg: '#fdeee2', icon: '🌐' },
-  { tag: 'ACCESSORY DEAL', h: 'Save 20% on cases & chargers this month.', p: 'Applied automatically at checkout on select accessories.', cta: 'Shop accessories', bg: '#eef6ee', icon: '🎧' },
+  { tag: 'Limited Time Offer', h: 'Get iPhone 17 for Absolute $0 with TradeUp.', p: 'Get yours on us with a Total Freedom $80/mo. plan (with Digital Discount).', cta: 'Shop iPhone 17 (256GB)', img: 'assets/offer-iphone17.png' },
+  { tag: 'Built-in eSIM', h: 'Stay connected on and off the grid with iPhone 17 Pro.', p: 'Get seamless connectivity, flexibility, convenience and better security — perfect for travel.', cta: 'Shop iPhone 17 Pro', img: 'assets/offer-iphone17pro.png' },
+  { tag: 'With TradeUp', h: 'Make iPhone 16 yours for Absolute Zero.', p: 'Get yours on us with a Total Freedom $70/mo. plan', cta: 'Shop iPhone 16 (128GB)', img: 'assets/offer-iphone16.png' },
+  { tag: 'Home Internet', h: 'Freedom Home Internet from $35/mo.', p: 'Reliable home internet with no term contracts — now available in your area.', cta: 'Get Home Internet', promo: 'Home Internet' },
+  { tag: 'Add a Line', h: 'Save $10/mo. on every additional line.', p: 'Add lines to your account and save on each one — up to 4 lines.', cta: 'Add a line', promo: 'Multi-line Savings' },
 ];
 function offerCard(o) {
   return `<div class="offer" onclick="toast('${o.h.split('.')[0].replace(/'/g,"\\'")} — added to cart')">
-    <div class="img" style="background:${o.bg}">${o.icon}</div>
-    <div class="body"><div class="tag">${o.tag}</div><h4>${o.h}</h4><p>${o.p}</p>
-    <button class="btn-solid">${o.cta}</button></div></div>`;
+    <div class="img${o.promo ? ' promo' : ''}">${o.img ? `<img src="${o.img}" alt="">` : o.promo}</div>
+    <div class="body"><div><div class="tag">${o.tag}</div><h4>${o.h}</h4></div><p>${o.p}</p></div>
+    <button class="btn-solid">${o.cta}</button></div>`;
 }
-$('homeOffers').innerHTML = offers.slice(0, 2).map(offerCard).join('');
+$('homeOffers').innerHTML = offers.map(offerCard).join('');
 $('shopOffers').innerHTML = offers.map(offerCard).join('');
 
 /* ---------- plan picker ---------- */
